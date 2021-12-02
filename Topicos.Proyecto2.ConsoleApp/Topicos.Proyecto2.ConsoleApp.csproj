@@ -1,8 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Topicos.Proyecto2.Api.Sakila\**" />
+    <Compile Remove="Topicos.Proyecto2.Sakila.Model\**" />
+    <EmbeddedResource Remove="Topicos.Proyecto2.Api.Sakila\**" />
+    <EmbeddedResource Remove="Topicos.Proyecto2.Sakila.Model\**" />
+    <None Remove="Topicos.Proyecto2.Api.Sakila\**" />
+    <None Remove="Topicos.Proyecto2.Sakila.Model\**" />
+  </ItemGroup>
+
 
 </Project>

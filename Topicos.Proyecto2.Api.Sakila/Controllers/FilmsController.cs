@@ -25,11 +25,14 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
 
         // GET: api/Films
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetFilms(int pageSize = 5, int pageNumber = 5)
+        public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetFilms()
         {
+            int pageSize = 5;
+            int pageNumber = 5;
+
             var film = await _context.Films.Include(a => a.FilmActors).ThenInclude(a => a.Actor)
-                            .Include(c => c.FilmCategories).ThenInclude(c => c.Category).OrderBy(f => f.Title).
-                Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+                            .Include(c => c.FilmCategories).ThenInclude(c => c.Category)
+                            .OrderBy(f => f.Title).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
             if (film == null)
             {
@@ -37,7 +40,6 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
             }
 
             var filmmapeado = _mapp.Map<List<DtoModel.DtoFilm>>(film);
-
             return filmmapeado;
         }
 
@@ -46,8 +48,8 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         public async Task<ActionResult<DtoModel.DtoFilm>> GetFilm(int id)
         {
             var film = (await _context.Films.Include(a => a.FilmActors).ThenInclude(a => a.Actor)
-                            .Include(c => c.FilmCategories).ThenInclude(c =>c.Category).Where(f => f.FilmId == id)
-                            .ToListAsync()).FirstOrDefault();
+                            .Include(c => c.FilmCategories).ThenInclude(c =>c.Category)
+                            .Where(f => f.FilmId == id).ToListAsync()).FirstOrDefault();
 
             if (film == null)
             {
@@ -62,22 +64,16 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         [HttpGet("PagedQuery/")]
         public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetCustomerPaged(int pageNumber, int pageSize)
         {
-            pageNumber = 5;
-            pageSize = 1;
             var film = await _context.Films.Include(a => a.FilmActors).ThenInclude(a => a.Actor)
                 .Include(c => c.FilmCategories).ThenInclude(c => c.Category).OrderBy(t => t.Title)
                 .Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
-
-            //var film = await _context.Films.OrderBy(c => c.Title).
-            //    Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
             if (film == null)
             {
                 return NotFound();
             }
 
             var filmmapeado = _mapp.Map<List<DtoModel.DtoFilm>>(film);
-
             return filmmapeado;
         }
 

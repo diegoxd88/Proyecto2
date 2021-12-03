@@ -8,7 +8,6 @@ namespace Topicos.Proyecto2.Api.Sakila.DtoModel
     public partial class DtoActor
     {
         public int ActorId { get; set; }
-        public string ActorFirstName { get; set; }
-        public string ActorLastName { get; set; }
+        public string ActorFullName { get; set; }
     }
 }

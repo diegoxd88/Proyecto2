@@ -31,6 +31,11 @@ namespace Topicos.Proyecto2.Api.Sakila
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Topicos.Proyecto2.Api.Sakila", Version = "v1" });
             });
+            services.AddAutoMapper(typeof(Startup));
+            services.AddSwaggerGen(options =>
+            {
+                options.CustomSchemaIds(type => type.ToString());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

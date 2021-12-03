@@ -27,7 +27,8 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetFilms(int pageSize = 5, int pageNumber = 5)
         {
-            var film = await _context.Films.OrderBy(f => f.Title).
+            var film = await _context.Films.Include(a => a.FilmActors).ThenInclude(a => a.Actor)
+                            .Include(c => c.FilmCategories).ThenInclude(c => c.Category).OrderBy(f => f.Title).
                 Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
             if (film == null)
@@ -61,19 +62,23 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         [HttpGet("PagedQuery/")]
         public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetCustomerPaged(int pageNumber, int pageSize)
         {
-            pageNumber = 1;
-            pageSize = 5;
-            var film = await _context.Films.OrderBy(c => c.Title).
-                Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+            pageNumber = 5;
+            pageSize = 1;
+            var film = await _context.Films.Include(a => a.FilmActors).ThenInclude(a => a.Actor)
+                .Include(c => c.FilmCategories).ThenInclude(c => c.Category).OrderBy(t => t.Title)
+                .Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
+
+            //var film = await _context.Films.OrderBy(c => c.Title).
+            //    Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
             if (film == null)
             {
                 return NotFound();
             }
 
-            var customermapeado = _mapp.Map<List<DtoModel.DtoFilm>>(film);
+            var filmmapeado = _mapp.Map<List<DtoModel.DtoFilm>>(film);
 
-            return customermapeado;
+            return filmmapeado;
         }
 
         // PUT: api/Films/5

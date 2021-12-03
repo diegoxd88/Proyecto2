@@ -10,7 +10,7 @@ namespace Topicos.Proyecto2.Api.Sakila.Profiles
     {
         public DtoAddressProfile()
         {
-            CreateMap<Topicos.Proyecto2.Sakila.Model.Model.Address, DTOModels.DtoAddress>();
+            CreateMap<Proyecto2.Sakila.Model.Model.Address, DTOModels.DtoAddress>();
         }
     }
 }

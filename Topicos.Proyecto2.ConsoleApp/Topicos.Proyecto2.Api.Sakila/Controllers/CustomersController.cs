@@ -25,27 +25,47 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
-        {
-            return await _context.Customers.ToListAsync();
-        }
+        //public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        //{
+        //    return await _context.Customers.ToListAsync();
+        //}
 
-        // GET: api/Customers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(int id)
+        public async Task<ActionResult<IEnumerable<DTOModels.DtoCountry>>> GetCustomers(int pageSize = 5, int pageNumber = 5)
         {
-            var customer = await _context.Customers.FindAsync(id);
-
-            //var customer = (await _context.Customers.Include(c => c.CustomerAddresses)
-            //                .ThenInclude(a => a.Address).Where(c => c.CustomerId == id)
-            //                .ToListAsync()).FirstOrDefault();
+            var customer = await (await _context.Customers.Include(c => c.Address)
+               .ThenInclude(a => a.City)
+               .ThenInclude(a => a.Country).
+                Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
             if (customer == null)
             {
                 return NotFound();
             }
 
-            return customer;
+            var customermapeado = _mapp.Map<List<DTOModels.DtoCountry>>(customer);
+
+            return customermapeado;
+        }
+
+        // GET: api/Customers/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DTOModels.DtoCountry>> GetCustomer(int id)
+        {
+           // var customer = await _context.Customers.FindAsync(id);
+
+            var customer = (await _context.Customers.Include(c => c.Address)
+               .ThenInclude(a => a.City)
+               .ThenInclude(a => a.Country)
+               .Where(c => c.CustomerId == id).ToListAsync()).FirstOrDefault();
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var customermapeado = _mapp.Map<DTOModels.DtoCountry>(customer);
+
+            return customermapeado;
         }
 
         // PUT: api/Customers/5

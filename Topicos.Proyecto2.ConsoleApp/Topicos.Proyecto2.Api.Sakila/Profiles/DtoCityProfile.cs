@@ -10,7 +10,7 @@ namespace Topicos.Proyecto2.Api.Sakila.Profiles
     {
         public DtoCityProfile()
         {
-            CreateMap<Topicos.Proyecto2.Sakila.Model.Model.City, DTOModels.DtoCity>();
+            CreateMap<Proyecto2.Sakila.Model.Model.City, DTOModels.DtoCity>();
         }
     }
 }

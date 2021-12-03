@@ -2,146 +2,135 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Topicos.Proyecto2.Sakila.Model.MyModels;
 
 namespace Topicos.Proyecto2.Api.Sakila.Controllers
 {
-    public class FilmsController : Controller
+    [Route("api/Film")]
+    [ApiController]
+    public class FilmsController : ControllerBase
     {
         private readonly sakilaContext _context;
+        private readonly IMapper _mapp;
 
-        public FilmsController(sakilaContext context)
+        public FilmsController(IMapper mapper)
         {
-            _context = context;
+            _context = new sakilaContext();
+            _mapp = mapper;
         }
 
-        // GET: Films
-        public async Task<IActionResult> Index()
+        // GET: api/Films
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetFilms(int pageSize = 5, int pageNumber = 5)
         {
-            return View(await _context.Films.ToListAsync());
-        }
+            var film = await _context.Films.OrderBy(f => f.Title).
+                Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
-        // GET: Films/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var film = await _context.Films
-                .FirstOrDefaultAsync(m => m.FilmId == id);
             if (film == null)
             {
                 return NotFound();
             }
 
-            return View(film);
+            var filmmapeado = _mapp.Map<List<DtoModel.DtoFilm>>(film);
+
+            return filmmapeado;
         }
 
-        // GET: Films/Create
-        public IActionResult Create()
+        // GET: api/Films/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DtoModel.DtoFilm>> GetFilm(int id)
         {
-            return View();
-        }
+            var film = (await _context.Films.Include(a => a.FilmActors)
+                            .Include(c => c.FilmCategories).Where(f => f.FilmId == id)
+                            .ToListAsync()).FirstOrDefault();
 
-        // POST: Films/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FilmId,Title,Description,ReleaseYear,LanguageId,OriginalLanguageId,RentalDuration,RentalRate,Length,ReplacementCost,Rating,SpecialFeatures,LastUpdate")] Film film)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(film);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(film);
-        }
-
-        // GET: Films/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var film = await _context.Films.FindAsync(id);
             if (film == null)
             {
                 return NotFound();
             }
-            return View(film);
+
+            var filmmapeado = _mapp.Map<DtoModel.DtoFilm>(film);
+            return filmmapeado;
         }
 
-        // POST: Films/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FilmId,Title,Description,ReleaseYear,LanguageId,OriginalLanguageId,RentalDuration,RentalRate,Length,ReplacementCost,Rating,SpecialFeatures,LastUpdate")] Film film)
+        // GET: api/Customers/PagedQuery/?pageNumber=3?pageSize=5
+        [HttpGet("PagedQuery/")]
+        public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetCustomerPaged(int pageNumber, int pageSize)
+        {
+
+            var film = await _context.Films.OrderBy(c => c.Title).
+                Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
+            if (film == null)
+            {
+                return NotFound();
+            }
+
+            var customermapeado = _mapp.Map<List<DtoModel.DtoFilm>>(film);
+
+            return customermapeado;
+        }
+
+        // PUT: api/Films/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutFilm(int id, Film film)
         {
             if (id != film.FilmId)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(film).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(film);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FilmExists(film.FilmId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(film);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!FilmExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Films/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Films
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Film>> PostFilm(Film film)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.Films.Add(film);
+            await _context.SaveChangesAsync();
 
-            var film = await _context.Films
-                .FirstOrDefaultAsync(m => m.FilmId == id);
+            return CreatedAtAction("GetFilm", new { id = film.FilmId }, film);
+        }
+
+        // DELETE: api/Films/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFilm(int id)
+        {
+            var film = await _context.Films.FindAsync(id);
             if (film == null)
             {
                 return NotFound();
             }
 
-            return View(film);
-        }
-
-        // POST: Films/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var film = await _context.Films.FindAsync(id);
             _context.Films.Remove(film);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool FilmExists(int id)

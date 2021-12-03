@@ -5,11 +5,9 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topicos.Proyecto2.ConsoleApp", "Topicos.Proyecto2.ConsoleApp\Topicos.Proyecto2.ConsoleApp.csproj", "{362B30E6-3BFE-4C03-9642-C0BEDC31175B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topicos.Proyecto2.Sakila.BL", "Topicos.Poryecto2.Sakila.BL\Topicos.Proyecto2.Sakila.BL.csproj", "{F837602F-2FB1-4699-898B-B77A0CAF33A5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topicos.Proyecto2.Sakila.Model", "Topicos.Proyecto2.Sakila.Model\Topicos.Proyecto2.Sakila.Model.csproj", "{B7F61C86-609F-4F9B-B46A-3E100C0ADCF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topicos.Proyecto2.Api.Sakila", "Topicos.Proyecto2.Api.Sakila\Topicos.Proyecto2.Api.Sakila.csproj", "{7B51C09B-1D03-4B21-BB43-6A4D15948D7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topicos.Proyecto2.Api.Sakila", "Topicos.Proyecto2.Api.Sakila\Topicos.Proyecto2.Api.Sakila.csproj", "{7B51C09B-1D03-4B21-BB43-6A4D15948D7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		{362B30E6-3BFE-4C03-9642-C0BEDC31175B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{362B30E6-3BFE-4C03-9642-C0BEDC31175B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{362B30E6-3BFE-4C03-9642-C0BEDC31175B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F837602F-2FB1-4699-898B-B77A0CAF33A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F837602F-2FB1-4699-898B-B77A0CAF33A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F837602F-2FB1-4699-898B-B77A0CAF33A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F837602F-2FB1-4699-898B-B77A0CAF33A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B7F61C86-609F-4F9B-B46A-3E100C0ADCF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B7F61C86-609F-4F9B-B46A-3E100C0ADCF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7F61C86-609F-4F9B-B46A-3E100C0ADCF7}.Release|Any CPU.ActiveCfg = Release|Any CPU

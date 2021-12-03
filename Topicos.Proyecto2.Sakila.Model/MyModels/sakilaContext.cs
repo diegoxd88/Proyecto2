@@ -18,6 +18,7 @@ namespace Topicos.Proyecto2.Sakila.Model.MyModels
         }
 
         public virtual DbSet<Actor> Actors { get; set; }
+        public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Film> Films { get; set; }
         public virtual DbSet<FilmActor> FilmActors { get; set; }
         public virtual DbSet<FilmCategory> FilmCategories { get; set; }
@@ -27,8 +28,7 @@ namespace Topicos.Proyecto2.Sakila.Model.MyModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=EXTREME-PC\\DIEGO;Database=sakila;Trusted_Connection=True;");
-                //optionsBuilder.UseSqlServer("Server=(local)\\;Database=NORTHWND;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=(local)\\;Database=sakila;Trusted_Connection=True;");
             }
         }
 
@@ -60,6 +60,26 @@ namespace Topicos.Proyecto2.Sakila.Model.MyModels
                     .HasColumnType("datetime")
                     .HasColumnName("last_update")
                     .HasDefaultValueSql("(getdate())");
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.ToTable("category");
+
+                entity.Property(e => e.CategoryId)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("category_id");
+
+                entity.Property(e => e.LastUpdate)
+                    .HasColumnType("datetime")
+                    .HasColumnName("last_update")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(25)
+                    .IsUnicode(false)
+                    .HasColumnName("name");
             });
 
             modelBuilder.Entity<Film>(entity =>
@@ -176,6 +196,12 @@ namespace Topicos.Proyecto2.Sakila.Model.MyModels
                     .HasColumnType("datetime")
                     .HasColumnName("last_update")
                     .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.FilmCategories)
+                    .HasForeignKey(d => d.CategoryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_film_category_category");
 
                 entity.HasOne(d => d.Film)
                     .WithMany(p => p.FilmCategories)

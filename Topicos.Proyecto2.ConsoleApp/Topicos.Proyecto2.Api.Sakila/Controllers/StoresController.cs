@@ -32,16 +32,43 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
 
         // GET: api/Stores/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Store>> GetStore(int id)
+        public async Task<ActionResult<DTOModels.DtoAddress>> GetStore(int id)
         {
-            var store = await _context.Stores.FindAsync(id);
+            // var store = await _context.Stores.FindAsync(id);
+
+            var store = (await _context.Stores.Include(a => a.Address)
+             .ThenInclude(c => c.City)
+             .ThenInclude(c => c.Country)
+             .Where(s => s.StoreId == id).ToListAsync()).FirstOrDefault();
 
             if (store == null)
             {
                 return NotFound();
             }
 
-            return store;
+            var storemapeado = _mapp.Map<DTOModels.DtoAddress>(store);
+
+            return storemapeado;
+        }
+
+        // GET: api/Customers/PagedQuery/?pageNumber=#?pageSize=#
+        [HttpGet("PagedQuery/")]
+        public async Task<ActionResult<IEnumerable<DTOModels.DtoStore>>> GetCustomerPaged(int pageNumber, int pageSize)
+        {
+
+            var store = await _context.Stores.Include(a => a.Address)
+                .ThenInclude(c => c.City)
+                .ThenInclude(c => c.Country)
+                .Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
+            if (store == null)
+            {
+                return NotFound();
+            }
+
+            var storemapeado = _mapp.Map<List<DTOModels.DtoStore>>(store);
+
+            return storemapeado;
         }
 
         // PUT: api/Stores/5

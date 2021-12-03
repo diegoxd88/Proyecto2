@@ -10,7 +10,7 @@ namespace Topicos.Proyecto2.Api.Sakila.Profiles
     {
         public DtoCountryProfile()
         {
-            CreateMap<Proyecto2.Sakila.Model.Model.Country, DTOModels.DtoCountry>();
+            CreateMap<Proyecto2.Sakila.Model.Model.Customer, DTOModels.DtoCustomer>();
         }
     }
 }

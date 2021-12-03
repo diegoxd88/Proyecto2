@@ -10,9 +10,10 @@ namespace Topicos.Proyecto2.Api.Sakila.DTOModels
         public int AddressId { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
-        public string District { get; set; }
         public string PostalCode { get; set; }
-        public string Phone { get; set; }
+        public string CityCity1 { get; set; }
+        public string District { get; set; }
+        public string CityCountryCountry1 { get; set; }
 
 
         //public virtual ICollection<Customer> Customers { get; set; }

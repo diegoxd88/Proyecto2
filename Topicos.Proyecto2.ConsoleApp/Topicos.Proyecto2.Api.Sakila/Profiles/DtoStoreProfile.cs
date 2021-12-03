@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Topicos.Proyecto2.Api.Sakila.Profiles
 {
-    public class DtoCityProfile : Profile
+    public class DtoStoreProfile : Profile
     {
-        public DtoCityProfile()
+        public DtoStoreProfile()
         {
-            CreateMap<Proyecto2.Sakila.Model.Model.City, DTOModels.DtoCity>();
+            CreateMap<Proyecto2.Sakila.Model.Model.Store, DTOModels.DtoStore>();
         }
     }
 }

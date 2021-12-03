@@ -30,26 +30,26 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         //    return await _context.Customers.ToListAsync();
         //}
 
-        public async Task<ActionResult<IEnumerable<DTOModels.DtoCountry>>> GetCustomers(int pageSize = 5, int pageNumber = 5)
+        public async Task<ActionResult<IEnumerable<DTOModels.DtoCustomer>>> GetCustomers(int pageSize = 5, int pageNumber = 5)
         {
-            var customer = await (await _context.Customers.Include(c => c.Address)
+            var customer = await _context.Customers.Include(c => c.Address)
                .ThenInclude(a => a.City)
-               .ThenInclude(a => a.Country).
-                Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+               .ThenInclude(a => a.Country)
+               .Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 
             if (customer == null)
             {
                 return NotFound();
             }
 
-            var customermapeado = _mapp.Map<List<DTOModels.DtoCountry>>(customer);
+            var customermapeado = _mapp.Map<List<DTOModels.DtoCustomer>>(customer);
 
             return customermapeado;
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<DTOModels.DtoCountry>> GetCustomer(int id)
+        public async Task<ActionResult<DTOModels.DtoCustomer>> GetCustomer(int id)
         {
            // var customer = await _context.Customers.FindAsync(id);
 
@@ -63,7 +63,27 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
                 return NotFound();
             }
 
-            var customermapeado = _mapp.Map<DTOModels.DtoCountry>(customer);
+            var customermapeado = _mapp.Map<DTOModels.DtoCustomer>(customer);
+
+            return customermapeado;
+        }
+
+        // GET: api/Customers/PagedQuery/?pageNumber=#?pageSize=#
+        [HttpGet("PagedQuery/")]
+        public async Task<ActionResult<IEnumerable<DTOModels.DtoCustomer>>> GetCustomerPaged(int pageNumber, int pageSize)
+        {
+
+            var customer = await _context.Customers.Include(a => a.Address)
+                .ThenInclude(c => c.City)
+                .ThenInclude(c => c.Country)
+                .Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            var customermapeado = _mapp.Map<List<DTOModels.DtoCustomer>>(customer);
 
             return customermapeado;
         }

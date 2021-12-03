@@ -44,8 +44,8 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DtoModel.DtoFilm>> GetFilm(int id)
         {
-            var film = (await _context.Films.Include(a => a.FilmActors)
-                            .Include(c => c.FilmCategories).Where(f => f.FilmId == id)
+            var film = (await _context.Films.Include(a => a.FilmActors).ThenInclude(a => a.Actor)
+                            .Include(c => c.FilmCategories).ThenInclude(c =>c.Category).Where(f => f.FilmId == id)
                             .ToListAsync()).FirstOrDefault();
 
             if (film == null)
@@ -61,7 +61,8 @@ namespace Topicos.Proyecto2.Api.Sakila.Controllers
         [HttpGet("PagedQuery/")]
         public async Task<ActionResult<IEnumerable<DtoModel.DtoFilm>>> GetCustomerPaged(int pageNumber, int pageSize)
         {
-
+            pageNumber = 1;
+            pageSize = 5;
             var film = await _context.Films.OrderBy(c => c.Title).
                 Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
 

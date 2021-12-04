@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Topicos.Proyecto2.Sakila.Model.MyValidations;
 
 namespace Topicos.Proyecto2.Sakila.Model.MyModels
 {
@@ -38,7 +39,7 @@ namespace Topicos.Proyecto2.Sakila.Model.MyModels
             public string FirstName { get; set; }
             [MaxLength(30)]
             public string LastName { get; set; }
-            //Custom validation
+            [LeapYear]
             public DateTime LastUpdate { get; set; }
         }
 
